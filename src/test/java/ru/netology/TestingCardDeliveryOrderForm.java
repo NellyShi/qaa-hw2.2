@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
@@ -22,17 +21,14 @@ class TestingCardDeliveryOrderForm {
         $("[data-test-id='name'] input").setValue("Шигапова Нэлли");
         LocalDate date = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String text = date.plusDays(3).format(formatter);
+        String dateString = date.plusDays(3).format(formatter);
         $("[data-test-id='date'] input").doubleClick();
         $("[data-test-id='date'] input").sendKeys(Keys.DELETE);
-        $("[data-test-id='date'] input").setValue(text);
+        $("[data-test-id='date'] input").setValue(dateString);
         $("[data-test-id='phone'] input").setValue("+79000000000");
         $("[data-test-id= 'agreement'] .checkbox__box").click();
         $(".button").click();
-        $("[data-test-id='city'] .input__sub").shouldBe(visible).shouldNotHave(text("Доставка в выбранный город недоступна"));
-        $("[data-test-id='phone'] .input__sub").shouldBe(visible).shouldNotHave(text("Телефон указан неверно"));
-        $("[data-test-id='name'] .input__sub").shouldBe(visible).shouldNotHave(text("Имя и Фамилия указаные неверно"));
-        $("[data-test-id='date'] .input__sub").shouldBe(visible).shouldNotHave(text("Заказ на выбранную дату невозможен"));
-        $(withText("Встреча успешно забронирована")).shouldBe(visible, Duration.ofSeconds(15));
+        $("[data-test-id='notification'] .notification__content").
+                shouldBe(visible, Duration.ofSeconds(15)).shouldHave(text("Встреча успешно забронирована на " + dateString));
     }
 }
