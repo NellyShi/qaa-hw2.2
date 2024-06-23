@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
@@ -28,6 +29,10 @@ class TestingCardDeliveryOrderForm {
         $("[data-test-id='phone'] input").setValue("+79000000000");
         $("[data-test-id= 'agreement'] .checkbox__box").click();
         $(".button").click();
+        $("[data-test-id='city'] .input__sub").shouldBe(visible).shouldNotHave(text("Доставка в выбранный город недоступна"));
+        $("[data-test-id='phone'] .input__sub").shouldBe(visible).shouldNotHave(text("Телефон указан неверно"));
+        $("[data-test-id='name'] .input__sub").shouldBe(visible).shouldNotHave(text("Имя и Фамилия указаные неверно"));
+        $("[data-test-id='date'] .input__sub").shouldBe(visible).shouldNotHave(text("Заказ на выбранную дату невозможен"));
         $(withText("Встреча успешно забронирована")).shouldBe(visible, Duration.ofSeconds(15));
     }
 }
